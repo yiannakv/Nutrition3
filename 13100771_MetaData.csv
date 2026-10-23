@@ -1,0 +1,77 @@
+﻿"Cube Title","Product Id","CANSIM Id",URL,"Cube Notes","Archive Status",Frequency,"Start Reference Period","End Reference Period","Total number of dimensions"
+"Percentage of total energy intake from protein, by dietary reference intake age-sex group, household population aged 1 and over, Canadian Community Health Survey (CCHS) - Nutrition, Canada and provinces",13100771,105-2019,"https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1310077101",1;2;3;11,"CURRENT - a cube available to the public and that is current",Occasional,2004-01-01,2015-01-01,3
+
+"Dimension ID","Dimension name","Dimension Notes","Dimension Definitions"
+1,Geography,,
+2,"Dietary age-sex reference intake group",,
+3,Characteristics,4;5;6;7;8;9;10,
+
+"Dimension ID","Member Name","Classification Code","Member ID","Parent Member ID",Terminated,"Member Notes","Member Definitions"
+1,Canada,[11124],1,,,,
+1,"Newfoundland and Labrador",[10],2,1,,,
+1,"Prince Edward Island",[11],3,1,,,
+1,"Nova Scotia",[12],4,1,,,
+1,"New Brunswick",[13],5,1,,,
+1,Quebec,[24],6,1,,,
+1,Ontario,[35],7,1,,,
+1,Manitoba,[46],8,1,,,
+1,Saskatchewan,[47],9,1,,,
+1,Alberta,[48],10,1,,,
+1,"British Columbia",[59],11,1,,,
+2,"1 to 3 years, both sexes",,1,,,,
+2,"4 to 8 years, both sexes",,2,,,,
+2,"9 to 13 years, males",,3,,,,
+2,"9 to 13 years, females",,4,,,,
+2,"14 to 18 years, males",,5,,,,
+2,"14 to 18 years, females",,6,,,,
+2,"19 to 30 years, males",,7,,,,
+2,"19 to 30 years, females",,8,,,,
+2,"31 to 50 years, males",,9,,,,
+2,"31 to 50 years, females",,10,,,,
+2,"51 to 70 years, males",,11,,,,
+2,"51 to 70 years, females",,12,,,,
+2,"71 years and over, males",,13,,,,
+2,"71 years and over, females",,14,,,,
+3,"Mean of percentage of total energy intake from protein",,1,,,,
+3,"Low 95% confidence interval, mean of percentage of total energy intake from protein",,2,,,,
+3,"High 95% confidence interval, mean of percentage of total energy intake from protein",,3,,,,
+3,"Coefficient of variation for mean of percentage of total energy intake from protein",,4,,,,
+
+Symbol Legend
+Description,Symbol
+"not available for a specific reference period",..
+"less than the limit of detection",<LOD
+"value rounded to 0 (zero) where there is a meaningful distinction between true zero and the value that was rounded",0s
+"data quality: excellent",A
+"data quality: very good",B
+"data quality: good",C
+"data quality: acceptable",D
+"use with caution",E
+"too unreliable to be published.",F
+"not applicable",...
+preliminary,p
+revised,r
+"suppressed to meet the confidentiality requirements of the Statistics Act",x
+terminated,t
+
+"Survey Code","Survey Name"
+5049,"Canadian Community Health Survey - Nutrition"
+
+"Subject Code","Subject Name"
+13,Health
+
+"Note ID",Note
+1,"Source: Statistics Canada, Canadian Community Health Survey (CCHS), Nutrition, 2004 and 2015."
+2,"The target population of the survey covers the population 1 year of age and over living in the ten provinces. Excluded from the survey's coverage are: persons living on reserves and other Aboriginal settlements, full-time members of the Canadian Forces and the institutionalized population."
+3,"This table excludes pregnant or breastfeeding females for whom there is another set of nutritional recommendations.  The sample of pregnant or breastfeeding women is not large enough to obtain reliable estimates."
+4,"Characteristics are based on the first 24-hour dietary recall interview only."
+5,"The dietary reference intake (DRI) age-sex groups are preferred to other age-sex groups for nutritional analysis because they are consistent with established standards from the American Institute of Medicine."
+6,"When comparing estimates, it is important to use confidence intervals to determine if differences between values are statistically significant. Confidence intervals describe sampling variability and give an indication of the precision of a given estimate."
+7,"Bootstrapping techniques were used to produce the coefficient of variation (CV) and 95% confidence intervals (CIs)."
+8,"Data with a coefficient of variation (CV) from 16.6% to 33.3% are identified as follows: (E) use with caution."
+9,"Data with a coefficient of variation (CV) greater than 33.3% were suppressed due to extreme sampling variability and are identified as follows: (F) too unreliable to be published."
+10,"Percentages are rounded to the nearest tenth."
+11,"The CANSIM table 105-2019 is an update of CANSIM table 105-2015, which has been archived."
+
+"Correction ID","Correction Date","Correction Note"
+
