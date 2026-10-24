@@ -46,17 +46,17 @@ close_path <- function(data) rbind(data, data[1, , drop = FALSE])
 #Applies this function to each radius value 
 #transform is adding three columns to each radius (x, y, and radius)
 
-radar_limit <- 50 
+radar_limit <- 30 
 
-ring_points <- bind_rows(lapply(seq(10, radar_limit, 10), function(radius) {
+ring_points <- bind_rows(lapply(seq(5, radar_limit, 5), function(radius) {
   close_path(transform(angles, radius = radius,
                         x = radius * cos(angle), y = radius * sin(angle)))
 }))
 
 spokes <- transform(angles, x = radar_limit * cos(angle), y = radar_limit * sin(angle))
 
-axis_labels <- transform(angles, x = (radar_limit + 10) * cos(angle),
-                         y = (radar_limit + 10) * sin(angle))
+axis_labels <- transform(angles, x = (radar_limit + 5) * cos(angle),
+                         y = (radar_limit + 5) * sin(angle))
 
 radar_points <- annual %>%  left_join(angles, by = c("prov_territ" = "band")) %>%
   mutate(x = percent * cos(angle), y = percent * sin(angle))
@@ -67,6 +67,27 @@ radar_lines <- radar_points %>% group_by(age_group) %>% group_modify(~ close_pat
 
 
 #plotting of the radar chart 
+library(ggplot2)
+
+
+sex_colours <- c(`51 to 70 years, females` = "#B56576", `51 to 70 years, males` = "#355070")
+chart_ink <- "#0d0d0e"
+chart_soft <- "#F0EBD2"
+chart_height <- 560
+
+clean_theme <- function() {
+  theme_classic(base_size = 12) +
+    theme(plot.background = element_rect(fill = "white", colour = NA),
+      panel.background = element_rect(fill = "white", colour = NA),
+      strip.background = element_rect(fill = "#FFF5F1", colour = NA),
+      strip.text = element_text(face = "bold", margin = margin(7, 0, 7, 0)),
+      panel.spacing.x = grid::unit(2, "lines"),
+      plot.title = element_text(size = 16, face = "bold", margin = margin(b = 8)),
+      plot.subtitle = element_text(size = 11, margin = margin(b = 12)),
+      plot.caption = element_text(hjust = 0, size = 10, margin = margin(t = 10)),
+      legend.position = "none", plot.margin = margin(12, 18, 12, 12))
+}
+
 
 radar_static <- ggplot() +
   geom_path(data = ring_points, aes(x, y, group = radius), colour = "#D8D2D5", linewidth = 0.45) +
@@ -76,19 +97,26 @@ radar_static <- ggplot() +
   # A light label backing keeps the radial scale readable over the upper spoke.
   annotate("label", x = 2, y = seq(10, radar_limit, 10),
            label = paste0(seq(10, radar_limit, 10), "%"),
-           hjust = 0, size = 3, label.size = NA, fill = "white", colour = chart_ink) +
-  geom_path(data = radar_lines, aes(x, y, colour = sex, linetype = sex), linewidth = 1) +
-  geom_point(data = radar_points, aes(x, y, colour = sex), size = 2.6) +
+           hjust = 0, size = 3, fill = "white", colour = chart_ink) +
+  geom_path(data = radar_lines, aes(x, y, colour = age_group, linetype = age_group), linewidth = 1) +
+  geom_point(data = radar_points, aes(x, y, colour = age_group), size = 2.6) +
   scale_colour_manual(values = sex_colours) +
-  scale_linetype_manual(values = c(Females = "solid", Males = "dashed")) +
-  coord_equal(xlim = c(-66, 66), ylim = c(-60, 67), clip = "off") +
-  labs(title = chart_titles["radar_static"],
-       subtitle = paste("United States ·", radar_year, "· percentage within each sex category"),
+  scale_linetype_manual(values = c(`51 to 70 years, females` = "solid", `51 to 70 years, males` = "dashed")) +
+  coord_equal(
+  xlim = c(-radar_limit - 5, radar_limit + 5),
+  ylim = c(-radar_limit - 5, radar_limit + 5),
+  clip = "off"
+) +
+  labs(title = "% of total energy intake by protein for Canadians 50 to 71 years of age",
+       subtitle = paste("Canadian Provinces/Territories 2015 ·", "· percentage within each sex category"),
        colour = NULL, linetype = NULL,
-       caption = "Five age shares per profile total 100%. Compare positions on spokes, not enclosed area.") +
+       caption = "Compare positions on spokes, not enclosed area.") +
   theme_void(base_size = 12) +
   theme(plot.background = element_rect(fill = "white", colour = NA),
         plot.title = element_text(size = 16, face = "bold", margin = margin(b = 8)),
         plot.subtitle = element_text(size = 11, margin = margin(b = 12)),
         plot.caption = element_text(size = 10, hjust = 0, margin = margin(t = 10)),
         legend.position = "bottom", plot.margin = margin(15, 25, 15, 25))
+
+
+radar_static
