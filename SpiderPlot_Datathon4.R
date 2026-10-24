@@ -64,3 +64,31 @@ radar_points <- annual %>%  left_join(angles, by = c("prov_territ" = "band")) %>
 
 radar_lines <- radar_points %>% group_by(age_group) %>% group_modify(~ close_path(.x)) %>% ungroup()
 #group by age/sex group. Then run the close path function on each group separately. Then remove groupings 
+
+
+#plotting of the radar chart 
+
+radar_static <- ggplot() +
+  geom_path(data = ring_points, aes(x, y, group = radius), colour = "#D8D2D5", linewidth = 0.45) +
+  geom_segment(data = spokes, aes(x = 0, y = 0, xend = x, yend = y),
+                colour = "#D8D2D5", linewidth = 0.45) +
+  geom_text(data = axis_labels, aes(x, y, label = band), size = 4, colour = chart_ink) +
+  # A light label backing keeps the radial scale readable over the upper spoke.
+  annotate("label", x = 2, y = seq(10, radar_limit, 10),
+           label = paste0(seq(10, radar_limit, 10), "%"),
+           hjust = 0, size = 3, label.size = NA, fill = "white", colour = chart_ink) +
+  geom_path(data = radar_lines, aes(x, y, colour = sex, linetype = sex), linewidth = 1) +
+  geom_point(data = radar_points, aes(x, y, colour = sex), size = 2.6) +
+  scale_colour_manual(values = sex_colours) +
+  scale_linetype_manual(values = c(Females = "solid", Males = "dashed")) +
+  coord_equal(xlim = c(-66, 66), ylim = c(-60, 67), clip = "off") +
+  labs(title = chart_titles["radar_static"],
+       subtitle = paste("United States ·", radar_year, "· percentage within each sex category"),
+       colour = NULL, linetype = NULL,
+       caption = "Five age shares per profile total 100%. Compare positions on spokes, not enclosed area.") +
+  theme_void(base_size = 12) +
+  theme(plot.background = element_rect(fill = "white", colour = NA),
+        plot.title = element_text(size = 16, face = "bold", margin = margin(b = 8)),
+        plot.subtitle = element_text(size = 11, margin = margin(b = 12)),
+        plot.caption = element_text(size = 10, hjust = 0, margin = margin(t = 10)),
+        legend.position = "bottom", plot.margin = margin(15, 25, 15, 25))
