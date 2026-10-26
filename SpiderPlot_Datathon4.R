@@ -120,3 +120,97 @@ radar_static <- ggplot() +
 
 
 radar_static
+
+#now we will make a dot plot since the values are too close
+
+dot_data <- profiles %>% filter(year == radar_year) %>%
+  mutate(row = match(as.character(band), profile_axes),
+         y = row + ifelse(sex == "Females", -0.13, 0.13))
+
+
+
+radar_dots <- ggplot(annual, aes(x = percent, y = prov_territ, colour = age_group)) +
+  geom_point(size = 3) +
+  scale_colour_manual(values = sex_colours) +
+  scale_y_reverse(breaks = 1:10, labels = profile_axes)+
+  scale_x_continuous(limits = c(0, radar_limit), breaks = seq(0, radar_limit, 5),
+                     labels = function(x) paste0(x, "%")) +
+  labs(title = "dot plot", subtitle = paste("Canadian Adults 51-70 years"),
+       x = "Percentage of protein intake", y = NULL, colour = NULL) +
+  clean_theme() + theme(legend.position = "bottom")
+
+#recreate the dataset so now we have the CI's
+
+annual1 <- radar_raw %>%
+  filter(REF_DATE == 2015, GEO %in% profile_axes,
+        Dietary.age.sex.reference.intake.group %in% age_bands,
+        Characteristics!="Coefficient of variation for mean of percentage of total energy intake from protein") %>%
+  transmute(year = as.integer(REF_DATE),
+    age_group = as.factor(Dietary.age.sex.reference.intake.group),
+    prov_territ = as.factor(GEO),
+    calculation = as.factor(Characteristics),
+    percent=VALUE
+  )
+#pivot wider so that the CIs and mean values are on separate columns 
+dot_data <- annual1 %>%
+  select(age_group, prov_territ, calculation, percent) %>%
+  tidyr::pivot_wider(
+    names_from = calculation,
+    values_from = percent
+  )
+
+dotplot <- ggplot(
+  dot_data,
+  aes(
+    x = `Mean of percentage of total energy intake from protein`,
+    y = reorder(prov_territ, `Mean of percentage of total energy intake from protein`),
+    colour = age_group
+  )) +
+  geom_errorbarh(
+    aes(
+      xmin = `Low 95% confidence interval, mean of percentage of total energy intake from protein`,
+      xmax = `High 95% confidence interval, mean of percentage of total energy intake from protein`
+    ),
+    height = 0.15,
+    position = position_dodge(width = 0.4)
+  ) +
+  geom_point(
+    position = position_dodge(width = 0.5),
+    size = 1.5
+  ) +
+  scale_colour_manual(values = sex_colours) +
+  scale_x_continuous(limits = c(0, 25),
+labels = function(x) paste0(x, "%")) +  
+  labs(
+    title = "% of total energy intake by protein for Canadians 50 to 71 years of age",
+    subtitle = "Canadian Provinces/Territories, 2015",
+    x = "Percent of total energy intake from protein",
+    y = NULL,
+    colour = NULL
+  ) +
+  geom_text(
+  aes(
+    label = sprintf("%.1f%%",
+      `Mean of percentage of total energy intake from protein`)
+  ),
+  size = 2.2,
+  hjust = -0.4,
+  position = position_dodge(width = 0.4),
+  show.legend = FALSE
+) + 
+  clean_theme() +
+  theme(
+  legend.position = "bottom",
+  panel.grid.major.y = element_line(
+    colour = "grey85",
+    linewidth = 0.3,
+    linetype = "dashed"
+  ))
+
+
+dotplot
+
+range(dot_data$`Mean of percentage of total energy intake from protein`)
+range(dot_data$`Low 95% confidence interval, mean of percentage of total energy intake from protein`)
+range(dot_data$`High 95% confidence interval, mean of percentage of total energy intake from protein`)
+
